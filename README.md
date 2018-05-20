@@ -1,2 +1,52 @@
-# Mink_ScientificReports_2018
-Here we provide the data (Sutherland_etal_MinkData.R), loadable functions (oSCR.R and utils.R), and the R script for model fitting (Sutherland_etal_MInkScript) that can be used to fit any of the SCR models described in the manuscript.
+# Data and Code supplement fo Sutherland _et al_ (2018)
+
+This script and the named functions and data files can be used to fit any of the SCR models described in the manuscript.
+
+#Libraries
+
+library(gdistance)
+library(raster)
+library(rgdal)
+library(rgeos)
+library(sp)
+
+#Load data object
+
+load("Data/Sutherland_etal_MinkData.Rdata")
+source("code/oSCR.fit.R")
+source("code/utils.R")
+sf <- minkData[["sf"]]
+ss <- minkData[["ss"]]
+cs <- minkData[["cs"]]
+
+#All univariate density models
+# - can fit any model form Sutherland et al using 
+# - combinations of the below
+
+Dmods <- c( ~1,
+            ~session,
+            ~river,
+            ~year,
+            ~d2urban,
+            ~cover,
+            ~d2Stem,
+            ~d2Stem:river)
+
+#AIC-best p0, sigma and cost models
+Smods <- c(~sex)
+Cmods <- c(~riparian-1)
+Pmods <- c(~visit + session,
+           ~visit + session + sex)
+
+#Select model to fit:
+# D = river, p0 = visit + session + sex, sigma = sex, asu = riparian
+
+mod <- list(Dmods[[3]], Pmods[[2]], Smods[[1]], Cmods[[1]]) 
+
+
+fm <- oSCR.fit(model = mod,
+               scrFrame = sf, 
+               ssDF = ss, 
+               costDF = cs, 
+               trimS = 4.5,
+               distmet="ecol")
