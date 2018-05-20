@@ -1,5 +1,5 @@
+#This script can be used to reporduce the analyses presented in Sutherland et al 2018 (Scientific Reports)
 #Libraries
-
 library(gdistance)
 library(raster)
 library(rgdal)
@@ -7,7 +7,6 @@ library(rgeos)
 library(sp)
 
 #Load data object
-
 load("Data/Sutherland_etal_MinkData.Rdata")
 source("code/oSCR.fit.R")
 source("code/utils.R")
